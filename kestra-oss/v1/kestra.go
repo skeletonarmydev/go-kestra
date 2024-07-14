@@ -33,6 +33,7 @@ type Client struct {
 
 	Flow      *FlowService
 	Execution *ExecutionService
+	Log       *LogService
 }
 
 // service is the base structure to bundle API services
@@ -76,6 +77,7 @@ func NewClient(baseURL string, httpClient *http.Client) (*Client, error) {
 
 	c.Flow = (*FlowService)(&c.common)
 	c.Execution = (*ExecutionService)(&c.common)
+	c.Log = (*LogService)(&c.common)
 
 	return c, nil
 }

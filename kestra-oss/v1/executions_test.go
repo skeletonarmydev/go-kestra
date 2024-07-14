@@ -11,6 +11,7 @@ func TestExecutionService_Create(t *testing.T) {
 		ctx       context.Context
 		namespace string
 		flowId    string
+		body      map[string]string
 	}
 	tests := []struct {
 		name    string
@@ -23,7 +24,7 @@ func TestExecutionService_Create(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.s.Create(tt.args.ctx, tt.args.namespace, tt.args.flowId)
+			_, got, err := tt.s.Create(tt.args.ctx, tt.args.namespace, tt.args.flowId, tt.args.body)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
 				return
