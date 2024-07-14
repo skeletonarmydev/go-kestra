@@ -2,7 +2,7 @@
 
 A simple golang module for [kestra.io](http://kestra.io).
 
-Note: not yet API complete
+Note: not yet API complete. Based on the [Kestra.io OSS v1 API](https://kestra.io/docs/api-reference/open-source)
 
 Install:
 ```
