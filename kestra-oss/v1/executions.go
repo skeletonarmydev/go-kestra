@@ -2,20 +2,51 @@ package v1
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 type ExecutionService service
 
-// Issue represents a Jira issue.
+type ExecutionTaskState struct {
+	Current   string    `json:"current,omitempty" structs:"current,omitempty"`
+	Duration  string    `json:"duration,omitempty" structs:"duration,omitempty"`
+	StartDate time.Time `json:"startDate,omitempty" structs:"startDate,omitempty"`
+	EndDate   time.Time `json:"endDate,omitempty" structs:"endDate,omitempty"`
+}
+
+type ExecutionTaskRun struct {
+	ID          string             `json:"id,omitempty" structs:"id,omitempty"`
+	TaskId      string             `json:"taskId,omitempty" structs:"taskId,omitempty"`
+	Description string             `json:"description,omitempty" structs:"description,omitempty"`
+	State       ExecutionTaskState `json:"state,omitempty" structs:"state,omitempty"`
+}
+
+type ExecutionHistory struct {
+	State string    `json:"state,omitempty" structs:"state,omitempty"`
+	Date  time.Time `json:"date,omitempty" structs:"date,omitempty"`
+}
+
+type ExecutionState struct {
+	Current   string             `json:"current,omitempty" structs:"current,omitempty"`
+	History   []ExecutionHistory `json:"histories,omitempty" structs:"histories,omitempty"`
+	Duration  string             `json:"duration,omitempty" structs:"duration,omitempty"`
+	StartDate time.Time          `json:"startDate,omitempty" structs:"startDate,omitempty"`
+	EndDate   time.Time          `json:"endDate,omitempty" structs:"endDate,omitempty"`
+}
+
+// Kestra Execution.
 type Execution struct {
-	ID           string `json:"id,omitempty" structs:"id,omitempty"`
-	Namespace    string `json:"namespace,omitempty" structs:"namespace,omitempty"`
-	FlowID       string `json:"flow_id,omitempty" structs:"flow_id,omitempty"`
-	FlowRevision string `json:"flow_revision,omitempty" structs:"flow_revision,omitempty"`
+	ID           string             `json:"id,omitempty" structs:"id,omitempty"`
+	Namespace    string             `json:"namespace,omitempty" structs:"namespace,omitempty"`
+	FlowID       string             `json:"flowId,omitempty" structs:"flowId,omitempty"`
+	FlowRevision json.Number        `json:"flowRevision,omitempty" structs:"flowRevision,omitempty"`
+	State        ExecutionState     `json:"state,omitempty" structs:"state,omitempty"`
+	TaskRunList  []ExecutionTaskRun `json:"taskRunList,omitempty" structs:"taskRunList,omitempty"`
 }
 
 func (s *ExecutionService) Get(ctx context.Context, executionID string) (*Execution, *Response, error) {

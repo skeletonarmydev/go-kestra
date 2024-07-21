@@ -2,6 +2,8 @@ package v1
 
 import (
 	"context"
+	"fmt"
+	"net/http"
 	"reflect"
 	"testing"
 )
@@ -37,6 +39,52 @@ func TestExecutionService_Create(t *testing.T) {
 }
 
 func TestExecutionService_Get(t *testing.T) {
+
+	setup()
+	defer teardown()
+
+	testMux.HandleFunc("/api/v1/executions/1CcnlV1DwvXXZauauyirIO", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, http.MethodGet)
+		testRequestURL(t, r, "/api/v1/executions/1CcnlV1DwvXXZauauyirIO")
+
+		_, err := fmt.Fprint(w, `{"id":"1CcnlV1DwvXXZauauyirIO","namespace":"tutorial",
+			"flowId":"hello_world",
+			"flowRevision":26,
+			"taskRunList":[{
+				"id":"321HwiEUBACDQzkJcP8J4r",
+				"executionId":"1CcnlV1DwvXXZauauyirIO",
+				"namespace":"tutorial",
+				"flowId":"hello_world",
+				"taskId":"log",
+				"attempts":[{"state":{"current":"SUCCESS",
+					"histories":[{"state":"CREATED","date":"2024-07-15T09:27:24.172Z"},
+						{"state":"RUNNING","date":"2024-07-15T09:27:24.172Z"},
+						{"state":"SUCCESS","date":"2024-07-15T09:27:24.176Z"}],
+					"duration":"PT0.004S","endDate":"2024-07-15T09:27:24.176Z",
+					"startDate":"2024-07-15T09:27:24.172Z"}}],
+			"outputs":{},
+			"state":{"current":"SUCCESS",
+				"histories":[{"state":"CREATED","date":"2024-07-15T09:27:24.048Z"},
+					{"state":"RUNNING","date":"2024-07-15T09:27:24.170Z"},
+					{"state":"SUCCESS","date":"2024-07-15T09:27:24.177Z"}],
+				"duration":"PT0.129S"
+				}}],
+			"inputs":{"name":"go.app"},
+			"state":{
+				"current":"SUCCESS",
+				"histories":[
+					{"state":"CREATED"},
+					{"state":"RUNNING"},
+					{"state":"SUCCESS"}],
+				"duration":"PT1.203S"},
+			"originalId":"1CcnlV1DwvXXZauauyirIO",
+			"deleted":false,
+			"metadata":{"attemptNumber":1,"originalCreatedDate":"2024-07-15T09:27:23.801Z"}}`)
+		if err != nil {
+			return
+		}
+	})
+
 	type args struct {
 		ctx         context.Context
 		executionID string
@@ -46,12 +94,9 @@ func TestExecutionService_Get(t *testing.T) {
 		s       ExecutionService
 		args    args
 		want    *Execution
-		want1   *Response
+		code    int
 		wantErr bool
-	}{
-
-		// TODO: Add test cases.
-	}
+	}{}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, got1, err := tt.s.Get(tt.args.ctx, tt.args.executionID)
@@ -62,8 +107,8 @@ func TestExecutionService_Get(t *testing.T) {
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Get() got = %v, want %v", got, tt.want)
 			}
-			if !reflect.DeepEqual(got1, tt.want1) {
-				t.Errorf("Get() got1 = %v, want %v", got1, tt.want1)
+			if !reflect.DeepEqual(got1, tt.code) {
+				t.Errorf("Get() got1 = %v, want %v", got1, tt.code)
 			}
 		})
 	}

@@ -9,11 +9,20 @@ import (
 
 type FlowService service
 
-// Issue represents a Jira issue.
+type FlowTask struct {
+	ID          string     `json:"id,omitempty" structs:"id,omitempty"`
+	Type        string     `json:"type,omitempty" structs:"type,omitempty"`
+	Description string     `json:"description,omitempty" structs:"description,omitempty"`
+	Tasks       []FlowTask `json:"tasks,omitempty" structs:"tasks,omitempty"`
+}
+
+// Flow struct
 type Flow struct {
-	ID        string      `json:"id,omitempty" structs:"id,omitempty"`
-	Namespace string      `json:"namespace,omitempty" structs:"namespace,omitempty"`
-	Revision  json.Number `json:"revision,omitempty" structs:"revision,omitempty"`
+	ID          string      `json:"id,omitempty" structs:"id,omitempty"`
+	Namespace   string      `json:"namespace,omitempty" structs:"namespace,omitempty"`
+	Revision    json.Number `json:"revision,omitempty" structs:"revision,omitempty"`
+	Description string      `json:"description,omitempty" structs:"description,omitempty"`
+	Tasks       []FlowTask  `json:"tasks,omitempty" structs:"tasks,omitempty"`
 }
 
 type SearchResult struct {
