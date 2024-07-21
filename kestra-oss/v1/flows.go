@@ -23,6 +23,7 @@ type Flow struct {
 	Revision    json.Number `json:"revision,omitempty" structs:"revision,omitempty"`
 	Description string      `json:"description,omitempty" structs:"description,omitempty"`
 	Tasks       []FlowTask  `json:"tasks,omitempty" structs:"tasks,omitempty"`
+	Source      string      `json:"source,omitempty" structs:"source,omitempty"`
 }
 
 type SearchResult struct {
@@ -60,6 +61,22 @@ func (s *FlowService) Get(ctx context.Context, namespace string, flowID string) 
 	}
 
 	return flow, resp, nil
+}
+
+func (s *FlowService) GetSource(ctx context.Context, namespace string, flowID string) (string, *Response, error) {
+	apiEndpoint := fmt.Sprintf("/api/v1/flows/%s/%s?source=true", namespace, flowID)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, apiEndpoint, nil, "")
+	if err != nil {
+		return "", nil, err
+	}
+
+	flow := new(Flow)
+	resp, err := s.client.Do(req, flow)
+	if resp.StatusCode == 404 {
+		return "", resp, nil
+	}
+
+	return flow.Source, resp, nil
 }
 
 func (s *FlowService) Search(ctx context.Context, query string) (*SearchResult, *Response, error) {
