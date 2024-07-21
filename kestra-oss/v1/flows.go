@@ -107,3 +107,16 @@ func (s *FlowService) Create(ctx context.Context, content string) (*Flow, *Respo
 
 	return flow, resp, nil
 }
+
+func (s *FlowService) Update(ctx context.Context, namespace string, flowID string, content string) (*Flow, *Response, error) {
+	apiEndpoint := fmt.Sprintf("/api/v1/flows/%s/%s", namespace, flowID)
+	req, err := s.client.NewRequest(ctx, http.MethodPut, apiEndpoint, &content, "application/x-yaml")
+	if err != nil {
+		return nil, nil, err
+	}
+
+	flow := new(Flow)
+	resp, err := s.client.Do(req, flow)
+
+	return flow, resp, nil
+}
