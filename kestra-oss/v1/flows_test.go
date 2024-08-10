@@ -16,7 +16,7 @@ func TestFlowService_Get(t *testing.T) {
 		testMethod(t, r, http.MethodGet)
 		testRequestURL(t, r, "/api/v1/flows/tutorial/hello_world")
 
-		fmt.Fprint(w, `{"id":"hello_world","namespace":"tutorial","revision":21,"disabled":false,"deleted":false,"description":"Hello World","tasks":[{"id":"log","type":"io.kestra.plugin.core.log.Log","message":"Hello World"}]}`)
+		fmt.Fprint(w, `{"id":"hello_world","namespace":"tutorial","revision":21,"inputs":[{"id":"service_name","name":"Service Name","type":"STRING","description":"What is the name of the service?","defaults":"neato"}],"disabled":false,"deleted":false,"description":"Hello World","tasks":[{"id":"log","type":"io.kestra.plugin.core.log.Log","message":"Hello World"}]}`)
 	})
 
 	type args struct {
@@ -34,7 +34,10 @@ func TestFlowService_Get(t *testing.T) {
 	}{
 		{"should find Hello World", *testClient.Flow,
 			args{context.Background(), "hello_world", "tutorial"},
-			&Flow{"hello_world", "tutorial", "21", "Hello World", []FlowTask{{"log", "io.kestra.plugin.core.log.Log", "", nil}}, ""},
+			&Flow{"hello_world", "tutorial", "21", "Hello World",
+				[]FlowTask{{"log", "io.kestra.plugin.core.log.Log", "", nil}},
+				[]FlowInput{{"service_name", "STRING", "Service Name", "What is the name of the service?", "neato", false}},
+				""},
 			200,
 			false,
 		},
@@ -98,7 +101,10 @@ func TestFlowService_Search(t *testing.T) {
 	}{
 		{"should find Hello World", *testClient.Flow,
 			args{context.Background(), "hello"},
-			&SearchResult{[]Flow{{"hello_world", "tutorial", "21", "Hello World", []FlowTask{{"log", "io.kestra.plugin.core.log.Log", "", nil}}, ""}}, 1},
+			&SearchResult{[]Flow{{"hello_world", "tutorial", "21", "Hello World",
+				[]FlowTask{{"log", "io.kestra.plugin.core.log.Log", "", nil}},
+				[]FlowInput{},
+				""}}, 1},
 			200,
 			false,
 		},
@@ -151,7 +157,7 @@ func TestFlowService_Create(t *testing.T) {
 	}{
 		{"should create Hello World", *testClient.Flow,
 			args{context.Background(), "hello_world"},
-			&Flow{"hello_world", "tutorial", "21", "Hello World", []FlowTask{{"log", "io.kestra.plugin.core.log.Log", "", nil}}, ""},
+			&Flow{"hello_world", "tutorial", "21", "Hello World", []FlowTask{{"log", "io.kestra.plugin.core.log.Log", "", nil}}, []FlowInput{}, ""},
 			200,
 			false,
 		},
@@ -198,7 +204,7 @@ func TestFlowService_GetAll(t *testing.T) {
 	}{
 		{"should get Hello World", *testClient.Flow,
 			args{context.Background(), "tutorial"},
-			&[]Flow{{"hello_world", "tutorial", "21", "Hello World", []FlowTask{{"log", "io.kestra.plugin.core.log.Log", "", nil}}, ""}},
+			&[]Flow{{"hello_world", "tutorial", "21", "Hello World", []FlowTask{{"log", "io.kestra.plugin.core.log.Log", "", nil}}, []FlowInput{}, ""}},
 			200,
 			false,
 		},

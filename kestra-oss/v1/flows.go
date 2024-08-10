@@ -16,6 +16,15 @@ type FlowTask struct {
 	Tasks       []FlowTask `json:"tasks,omitempty" structs:"tasks,omitempty"`
 }
 
+type FlowInput struct {
+	ID          string `json:"id,omitempty" structs:"id,omitempty"`
+	Type        string `json:"type,omitempty" structs:"type,omitempty"`
+	Name        string `json:"name,omitempty" structs:"name,omitempty"`
+	Description string `json:"description,omitempty" structs:"description,omitempty"`
+	Defaults    string `json:"defaults,omitempty" structs:"defaults,omitempty"`
+	Required    bool   `json:"required,omitempty" structs:"required,omitempty"`
+}
+
 // Flow struct
 type Flow struct {
 	ID          string      `json:"id,omitempty" structs:"id,omitempty"`
@@ -23,6 +32,7 @@ type Flow struct {
 	Revision    json.Number `json:"revision,omitempty" structs:"revision,omitempty"`
 	Description string      `json:"description,omitempty" structs:"description,omitempty"`
 	Tasks       []FlowTask  `json:"tasks,omitempty" structs:"tasks,omitempty"`
+	Inputs      []FlowInput `json:"inputs,omitempty" structs:"inputs,omitempty"`
 	Source      string      `json:"source,omitempty" structs:"source,omitempty"`
 }
 
